@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/>
+    	<script type="text/javascript" src="js/jquery-3.2.1.min.js" ></script>
+    	<script type="text/javascript" src="js/seeImg.js" ></script>
+		<title>ERP兼容手机电脑的图片查看器</title>
+		<style>
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			iframe{
+				border: none;
+			}
+		</style>
+	</head>
+	<body>
+		<img id="ImgD" src="./img/3.jpg" onclick="$.viewerSee(this)" />
+
+		<!--<iframe src="extendSeeImg/photoSee.html" style="position: absolute; top: 0; left: 0;" width="100%" height="90%"></iframe>-->
+		<script type="text/javascript">
+//			alert(document.getElementsByTagName("ImgD")[0].naturalWidth)
+		</script>
+	</body>
+</html>

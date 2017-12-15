@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<script>
+			
+			var startD,startM,startU;
+			if("ontouchend" in document){
+				startD = "touchstrat";
+				startM = "touchmove";
+				startU = "touchend";
+			}else{
+				startD = "mousedown";
+				startM = "mousemove";
+				startU = "mouseup";
+			}
+			
+			alert( startD +','+ startM +','+ startU );
+			
+			
+			for(var a in window){
+				console.log(a);
+			}
+			
+			
+		</script>
+	</body>
+</html>
