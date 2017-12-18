@@ -22,7 +22,7 @@
 			if("ontouchend" in document) CLIKC = "touchstrat";
 			else CLIKC = "click";
             //iframe里面的进行关闭操作
-            $("#X > i").on(CLIKC,function(){
+            $("#X > i").on("click",function(){
             	var _parent =  window.parent || window.top, // window.self,window.top,window.parent的区别
 				_jg = _parent.document.getElementById("seeMore");
 				$(_jg).remove();
@@ -35,17 +35,39 @@
 				$img = $('img'),
 				$imgR = opts.width/opts.height,// 用到原始图片的宽高比例
 				$left,$top,$width,$height;
+			//判断初始化屏幕和图片的位置
             function resetInit(){
             	var minWidth = Math.min(wW, opts.width);
             	var maxWidth = Math.max(wW, opts.width);
+            	$width = opts.width,
+            	$height = opts.height;
             	
-            	if(wW > opts.width){
-            		
-            	}else{
-            		$img.width(minWidth);
+            	if($imgR >= 1){	//宽比较大
+            		if(wW < opts.width){
+	            		$width = wW;
+	            		$height = $width/$imgR;
+	            	}
+            		if(wH < opts.height){
+	            		$height = $height;
+	            		$width = $height*$imgR;
+	            	}
+            	}else{	//高比较大
+            		if(wH < opts.height){
+	            		$height = wH;
+	            		$width = $height*$imgR;
+	            	}
+            		// 高度比较大的图片，宽超出怎么处理
+//          		if(wW < $width){
+//          			$width = wW;
+//          			$height = wW/$imgR; 
+//	            	}
             	}
+            	$width-=20;
+            	$height-=20;
             	
-        		$img.css({'left': (wW-opts.width)/2, 'top': (wH-opts.height)/2})
+            	console.log('height'+':'+Math.floor($height),'width'+':'+Math.floor($width), 'left'+':'+ Math.floor((wW-$width)/2), 'top'+':'+Math.floor((wH-$height)/2));
+            	
+        		$img.css({'height':Math.floor($height),'width':Math.floor($width), 'left': Math.floor((wW-$width)/2), 'top': Math.floor((wH-$height)/2)})
             }
             resetInit();
             
