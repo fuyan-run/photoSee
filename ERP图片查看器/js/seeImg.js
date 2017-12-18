@@ -179,11 +179,6 @@
             }
         }
     });
-    //默认参数
-    var defaluts = {
-        foreground: 'red',
-        background: 'yellow'
-    };
     
     $.extend({
     	
@@ -203,8 +198,6 @@
 			natureWidth = thisImg[0].naturalWidth;
 			natureHeight = thisImg[0].naturalHeight;
 			//浏览器可视区的大小
-//			var oLW = document.documentElement.clientWidth;
-//			var oLH = document.documentElement.clientHeight;
 			var oLW = window.innerWidth, //为什么没用document.documentElement.clientWidth呢，因为这个会包含滚动条
 				oLH = window.innerHeight;
 				
