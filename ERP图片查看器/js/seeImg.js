@@ -141,7 +141,7 @@
 					})
 				
 				})
-				.on('mouseup',function(){
+				.on('mouseup mouseout',function(){
 					dragFlag = false;
 				})
 				
@@ -160,7 +160,7 @@
             	}
             	
             	showTip(parseInt($width/opts.width*100)+'%');
-            	setImagePosition();
+              	setImagePosition();
             }
             function smallerImage(){
             	$width = $width *  (1 - defaluts.ratio);
@@ -173,9 +173,8 @@
             		$width = opts.width;
             		$height = $width/$imgR;
             	}
-            	            	
             	showTip(parseInt($width/opts.width*100)+'%');
-            	setImagePosition();
+              	setImagePosition();
             }
         }
     });
