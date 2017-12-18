@@ -73,6 +73,10 @@
             //由于是兼容移动端和pc端，所以这里要判断是不是移动端
             if('ontouchstart' in window){
             	
+            	
+            	
+            	
+            	
             }else{
 	            //编写pc端图片滚轮事件
 				var isFirefox = navigator.userAgent.indexOf("Firefox") > -1 ;
