@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/>
+    	<script type="text/javascript" src="./js/touch.demo.js" ></script>
+		<title>移动端touch时间的判断</title>
+	</head>
+	<body>
+		
+		<div id="box" style="width: 200px; height: 200px; background-color: #ff6400;">
+			
+		</div>
+		
+		
+		<script>
+			var box=document.querySelector("#box");
+		    var boxGesture=setGesture(box);  //得到一个对象
+		    boxGesture.gesturestart=function(){  //双指开始
+		        box.style.backgroundColor="yellow";
+		    };
+		    boxGesture.gesturemove=function(e){  //双指移动
+		        box.innerHTML = e.scale+"<br />"+e.rotation;
+		        box.style.transform="scale("+e.scale+") rotate("+e.rotation+"deg)";//改变目标元素的大小和角度
+		    };
+		    boxGesture.gestureend=function(){  //双指结束
+		        //box.innerHTML="";
+		        box.style.cssText="background-color:red";
+		    };
+		</script>
+		
+	</body>
+</html>

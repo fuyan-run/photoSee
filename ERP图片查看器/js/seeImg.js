@@ -72,9 +72,51 @@
 		  	
             //由于是兼容移动端和pc端，所以这里要判断是不是移动端
             if('ontouchstart' in window){
-            	
-            	
-            	
+            	//构造函数PhoneScale
+            	function PhoneScale(obj){
+            		this.dragFlag = false;
+            		this.firstPint = null;
+            		this.secondPint = null;
+            		this.defaluts = {
+            			"el": "",
+            			"startFn": "",
+            			"endFn": "",
+            			"moveFn": "",
+            		}
+            		this.opts = $.extend(defaluts, obj);
+            		this.init();
+            	}
+            	PhoneScale.prototype.init = function(){
+            		if(!this.opts.el){ alert('没有挂载点'); return;}
+            		this.oImg = $(this.opts.el);
+            	}
+            	PhoneScale.prototype.Move = function(){
+            		var _this = this;
+            		this.oImg.addEventListener('touchstart',function(e){
+            			if(e.touches.length>=2){
+            				_this.firstPoint = e.touches;
+            				_this.dragFlag = true;
+            				_this.opts.stratFn&&_this.opts.stratFn();
+            			}
+            		})
+            		document.addEventListener("touchmove",function(e){
+				        e.preventDefault();
+				        if(e.touches.length>=2&&_this.dragFlag){
+				            _this.secondPint = e.touches;
+				            //缩放比例
+				            var scale=getDistance(now[0],now[1])/getDistance(start[0],start[1]); //得到缩放比例，getDistance是勾股定理的一个方法
+            				
+            				_this.opts.moveFn&&_this.opts.moveFn();
+				        };
+				    },false);
+				    document.addEventListener("touchend",function(e){
+				        if(_this.dragFlag){
+				            _this.dragFlag=false;
+            				_this.opts.endFn&&_this.opts.endFn();
+				        };
+				    },false);
+            	}
+            	            	
             	
             	
             }else{
