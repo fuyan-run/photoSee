@@ -7,7 +7,7 @@
             	ratio: 0.2,
             	//动态添加的模板
             	template :{
-            		IMAGE: "<img ondragstart='return false;' style='position: absolute; top: 0; left: 0;' src='"+ options.src +"' />"
+            		IMAGE: "<img id='img' ondragstart='return false;' style='position: absolute; top: 0; left: 0;' src='"+ options.src +"' />"
             	},
             	//showTip的显示timer定时器
             	showTimer : null
@@ -28,7 +28,7 @@
 //          先获取window的宽高
 			var wW = window.innerWidth,
 				wH=window.innerHeight,
-				$img = $('img'),
+				$img = $('#img'),
 				$imgR = opts.width/opts.height,// 用到原始图片的宽高比例
 				$left,$top,$width,$height;
 			
@@ -77,46 +77,57 @@
             		this.dragFlag = false;
             		this.firstPint = null;
             		this.secondPint = null;
+            		this.scale = 0;
             		this.defaluts = {
             			"el": "",
-            			"startFn": "",
-            			"endFn": "",
-            			"moveFn": "",
+            			"startFn": null,
+            			"endFn": null,
+            			"moveFn": null,
             		}
             		this.opts = $.extend(defaluts, obj);
-            		this.init();
+            		this.oInit();
             	}
-            	PhoneScale.prototype.init = function(){
+            	PhoneScale.prototype.oInit = function(){
             		if(!this.opts.el){ alert('没有挂载点'); return;}
-            		this.oImg = $(this.opts.el);
+            		this.Move();
             	}
             	PhoneScale.prototype.Move = function(){
             		var _this = this;
-            		this.oImg.addEventListener('touchstart',function(e){
+            		document.addEventListener('touchstart',function(e){
             			if(e.touches.length>=2){
             				_this.firstPoint = e.touches;
             				_this.dragFlag = true;
-            				_this.opts.stratFn&&_this.opts.stratFn();
             			}
+            			_this.opts.stratFn&&_this.opts.stratFn();
             		})
             		document.addEventListener("touchmove",function(e){
 				        e.preventDefault();
 				        if(e.touches.length>=2&&_this.dragFlag){
 				            _this.secondPint = e.touches;
-				            //缩放比例
-				            var scale=getDistance(now[0],now[1])/getDistance(start[0],start[1]); //得到缩放比例，getDistance是勾股定理的一个方法
-            				
-            				_this.opts.moveFn&&_this.opts.moveFn();
+				            //缩放比例根据两手指的距离判断
+				            var oX = (_this.firstPoint[0].pageX - _this.secondPint[0].pageX);
+				            var oY = (_this.firstPoint[0].pageY - _this.secondPint[0].pageY);
+				            var scale = Math.sqrt( oX*oX +  oY*oY );
+				            _this.scale = scale/10;//亲测scale的数值变化比较大，所以除以参数，限制图片大小的反应灵敏
+				            
+				            // 重新定义图片的大小
+            				$img.css('transform', 'scale('+ _this.scale +')');
 				        };
+				        _this.opts.moveFn&&_this.opts.moveFn();
 				    },false);
 				    document.addEventListener("touchend",function(e){
 				        if(_this.dragFlag){
 				            _this.dragFlag=false;
-            				_this.opts.endFn&&_this.opts.endFn();
 				        };
+				        _this.opts.endFn&&_this.opts.endFn();
 				    },false);
             	}
-            	            	
+            	var a = new PhoneScale({
+            		"el": $img,
+            		"startFn": function(){
+            			console.log(1);
+            		},
+            	})
             	
             	
             }else{
