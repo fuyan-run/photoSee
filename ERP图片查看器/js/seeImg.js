@@ -277,7 +277,7 @@
 			//判断图片路径的正确
 			var thisImg = $(obj),
 				thisImgSrc = $(obj)[0].src;
-			if(!thisImgSrc){ 
+			if(!thisImgSrc){
 				alert('您图片的路径不正确，请检查');
 				return;}
 			//获取图片的原始大小
