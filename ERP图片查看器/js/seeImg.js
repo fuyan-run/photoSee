@@ -72,60 +72,98 @@
 		  	
             //由于是兼容移动端和pc端，所以这里要判断是不是移动端
             if('ontouchstart' in window){
+				var downX,downY, dragFlag,oldLeft,oldTop;
             	//构造函数PhoneScale
             	function PhoneScale(obj){
             		this.dragFlag = false;
             		this.firstPint = null;
             		this.secondPint = null;
             		this.scale = 0;
+            		this.newW = 0;
+            		this.newH = 0;
             		this.defaluts = {
-            			"el": "",
-            			"startFn": null,
-            			"endFn": null,
-            			"moveFn": null,
+            			el: null,
+            			startFn: null,
+            			endFn: null,
+            			moveFn: null,
             		}
-            		this.opts = $.extend(defaluts, obj);
+            		this.opt = $.extend(this.defaluts, obj);
             		this.oInit();
             	}
             	PhoneScale.prototype.oInit = function(){
-            		if(!this.opts.el){ alert('没有挂载点'); return;}
-            		this.Move();
-            	}
-            	PhoneScale.prototype.Move = function(){
             		var _this = this;
+            		if(!this.opt.el){ alert('没有挂载点'); return;}
+            		this.Move(_this);
+            	}
+            	PhoneScale.prototype.Move = function(obj){
+            		var _this = this;
+            		function getDistance(p1, p2) {
+					    var x = p2.pageX - p1.pageX,
+					        y = p2.pageY - p1.pageY;
+					    return Math.sqrt((x * x) + (y * y));
+					};
             		document.addEventListener('touchstart',function(e){
             			if(e.touches.length>=2){
             				_this.firstPoint = e.touches;
             				_this.dragFlag = true;
+            			}else{
+            				downX = e.touches[0].pageX,
+							downY = e.touches[0].pageY,
+							oldLeft = $img.position().left,
+							oldTop = $img.position().top,
+							imgW = $img.width(),
+							imgH = $img.height();
+							dragFlag = true;
             			}
-            			_this.opts.stratFn&&_this.opts.stratFn();
+				        obj.opt.startFn&&obj.opt.startFn();
             		})
             		document.addEventListener("touchmove",function(e){
 				        e.preventDefault();
 				        if(e.touches.length>=2&&_this.dragFlag){
 				            _this.secondPint = e.touches;
 				            //缩放比例根据两手指的距离判断
-				            var oX = (_this.firstPoint[0].pageX - _this.secondPint[0].pageX);
-				            var oY = (_this.firstPoint[0].pageY - _this.secondPint[0].pageY);
-				            var scale = Math.sqrt( oX*oX +  oY*oY );
-				            _this.scale = scale/10;//亲测scale的数值变化比较大，所以除以参数，限制图片大小的反应灵敏
+				            var scale = getDistance(_this.secondPint[0],_this.secondPint[1])/getDistance(_this.firstPoint[0],_this.firstPoint[1]);
+				            _this.scale = scale;
+				            _this.newW = $width*_this.scale;
+				            _this.newH = _this.newW/$imgR;
 				            
 				            // 重新定义图片的大小
-            				$img.css('transform', 'scale('+ _this.scale +')');
-				        };
-				        _this.opts.moveFn&&_this.opts.moveFn();
+	  						$img.css({'width': _this.newW,'height': _this.newH});
+	  							  						
+				        }else{
+				        	if(dragFlag){
+								var moveX = e.touches[0].pageX,
+									moveY = e.touches[0].pageY,
+									newLeft = moveX - downX + oldLeft,
+									newTop = moveY - downY + oldTop;
+									
+								$img.css({'left': newLeft});
+								$img.css({'top': newTop})
+							}
+				        }
+				        _this.opt.moveFn&&_this.opt.moveFn();
 				    },false);
 				    document.addEventListener("touchend",function(e){
 				        if(_this.dragFlag){
+				        	$height = _this.newH;
+				        	$width = _this.newW;
+				        	if(wH > $height&&wW > $width){
+				        		setImagePosition();
+				        	}
+				        	showTip(parseInt($width/opts.width*100)+'%');
 				            _this.dragFlag=false;
+							dragFlag = false;
 				        };
-				        _this.opts.endFn&&_this.opts.endFn();
+				        _this.opt.endFn&&_this.opt.endFn();
 				    },false);
             	}
             	var a = new PhoneScale({
-            		"el": $img,
-            		"startFn": function(){
-            			console.log(1);
+            		el: $img,
+            		startFn: function(){
+            			//console.log('开始准备');
+            		},
+            		moveFn: function(){
+            			//console.log('移动中');
             		},
             	})
             	
@@ -148,17 +186,11 @@
 		            	smallerImage();
 		        	}
 		        	e.preventDefault();
-				}
-				//双击相对于浏览器窗口大小重新显示
-				$img.dblclick(function(){
-					resetInit();
-				})				
+				}			
 				//pc拖拽的编写
 				//存储down的鼠标位置,允许拖拽与否,图片老位置
 				var downX,downY, dragFlag,oldLeft,oldTop;
-				$img.on("mouseover", function(){
-					
-				}).on("mousedown", function(event){
+				$img.on("mousedown", function(event){
 					downX = event.clientX,
 					downY = event.clientY,
 					oldLeft = $(this).position().left,
@@ -192,7 +224,6 @@
 							}
 						}
 					})
-				
 				})
 				.on('mouseup mouseout',function(){
 					dragFlag = false;
@@ -200,6 +231,10 @@
 				
             }
             
+			//双击相对于浏览器窗口大小重新显示
+			$img.dblclick(function(){
+				resetInit();
+			})
             function biggerImage(){
             	$width = $width * (1 + defaluts.ratio);
             	$height = $height * (1 + defaluts.ratio);
